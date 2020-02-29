@@ -15,19 +15,27 @@ class RecipesController < ApplicationController
     end
 
     def create
-        recipe = Recipe.new(post_params)
-        if recipe.title.blank? or recipe.serves.blank? or recipe.making_time.blank? or recipe.ingredients.blank? or recipe.cost.blank?
+        if params[:title].blank? or params[:serves].blank? or params[:making_time].blank? or params[:ingredients].blank? or params[:cost].blank?
             render json: {message: 'Recipe creation failed!', required: 'title, making_time, serves, ingredients, cost'}
-        elsif recipe.save
-            render json: {message: 'Recipe successfully created!', recipe: [recipe]}
         else
-            render json: {message: 'Recipe creation failed!', required: 'title, making_time, serves, ingredients, cost'}
+            recipe = Recipe.new(post_params)
+            if recipe.save
+                render json: {message: 'Recipe successfully created!', recipe: [recipe]}
+            else
+                render json: {message: 'Recipe creation failed!', required: 'title, making_time, serves, ingredients, cost'}
+            end
         end
     end
 
     def update
-        @recipe.update(post_params)
-        render json: {message: 'Recipe successfully updated!', recipe: [@recipe]}
+        if params[:title].blank? or params[:serves].blank? or params[:making_time].blank? or params[:ingredients].blank? or params[:cost].blank?
+            render json: {message: 'Recipe update failed!', required: 'title, making_time, serves, ingredients, cost'}
+        elsif @recipe.blank?
+            render json: {message: 'No Recipe found'}
+        else
+            @recipe.update(post_params)
+            render json: {message: 'Recipe successfully updated!', recipe: [@recipe]}
+        end
     end
 
     def destroy
@@ -51,7 +59,11 @@ class RecipesController < ApplicationController
     end
 
     def post_params
-        params.require(:recipe).permit(:title, :serves, :making_time, :ingredients, :cost)
+        if params.nil?
+            return nil
+        else
+            params.require(:recipe).permit(:title, :serves, :making_time, :ingredients, :cost)
+        end
     end
 
 end
