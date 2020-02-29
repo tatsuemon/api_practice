@@ -6,7 +6,11 @@ ruby '2.6.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4'
+# 開発環境(ローカル)ではSQLite3を使用
+gem 'sqlite3', group: :development
+
+# 本番環境(heroku)ではPostgreSQLを使用
+gem 'pg', group: :production
 # Use Puma as the app server
 gem 'puma', '~> 4.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
